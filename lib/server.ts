@@ -4,6 +4,7 @@ const fs  = require('fs');
 const https = require('https');
 import { httpPort, httpsPort } from './config.js'
 
+// Son certificados de prueba
 const privateKey  = fs.readFileSync('selfsigned.key', 'utf8');
 const certificate = fs.readFileSync('selfsigned.crt', 'utf8');
 let credentials = {key: privateKey, cert: certificate};

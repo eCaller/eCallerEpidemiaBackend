@@ -1,23 +1,23 @@
-import { Request, Response } from 'express';
-import { NoticiasService } from '../services/noticiasService';
+import { PreguntaService } from '../services/preguntaService';
+import { CasospositivosService } from '../services/CasospositivosService';
+import { VariablesService } from '../services/VariablesService';
 
 export class Routes {
 
-    public noticiasService: NoticiasService = new NoticiasService();
+    public preguntaService: PreguntaService = new PreguntaService();
+    public casospositivosService: CasospositivosService = new CasospositivosService();
+    public variablesService: VariablesService = new VariablesService();
 
     public routes(app): void {
-        app.route('/')
-            .get(this.noticiasService.findAllNoticias)
+        app.route('/triage')
+            .get(this.preguntaService.findAllPreguntas)
+            .post(this.preguntaService.savetriage)
+        app.route('/casospositivos')
+            .get(this.casospositivosService.findAllCasospositivos)
+        app.route('/variables')
+            .get(this.variablesService.findAllVariables)
+        app.route('/comprobarTriage')
+            .post(this.preguntaService.comprobarTriage)
+
     }
 }
-
-/*
-app.use(function (req, res, next) {
-    // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    // Request methods you wish to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    // Pass to next layer of middleware
-    next();
-});
-*/
