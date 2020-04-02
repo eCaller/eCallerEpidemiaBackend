@@ -2,7 +2,7 @@ import app from './app';
 const fs  = require('fs');
 //const http = require('http');
 const https = require('https');
-import { httpPort, httpsPort } from './config.js'
+const config = require('./config')
 
 // Son certificados de prueba
 const privateKey  = fs.readFileSync('selfsigned.key', 'utf8');
@@ -12,4 +12,4 @@ let credentials = {key: privateKey, cert: certificate};
 //let httpServer = http.createServer(app);
 let httpsServer = https.createServer(credentials, app);
 //httpServer.listen(httpPort);
-httpsServer.listen(httpsPort);
+httpsServer.listen(config.httpsPort);

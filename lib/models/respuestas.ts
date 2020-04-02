@@ -1,7 +1,7 @@
-
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, ManyToMany, Index, JoinColumn } from 'typeorm'
 import { Preguntas } from './preguntas';
 import { Casospositivos } from './casospositivos';
+import { Casos } from './casos';
 
 @Entity()
 export class Respuestas {
@@ -22,8 +22,11 @@ export class Respuestas {
     })
     pregunta: Preguntas;
 
-    @ManyToMany(type => Casospositivos, casospositivos => casospositivos.respuestas)
+    @ManyToMany(type => Casospositivos, casospositivo => casospositivo.respuestas)
     casospositivos: Casospositivos[];
 
+    @ManyToMany(type => Casos, caso => caso.respuestas)
+    casos: Casos[];
+    
     valor: boolean;
 }

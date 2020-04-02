@@ -3,12 +3,19 @@ import * as bodyParser from "body-parser";
 import { Routes } from './routes/routes';
 import "reflect-metadata"; // Import para typerom
 import { createConnection } from 'typeorm';
-import { databaseHost, databaseSchema, databasePort, databaseUsername, databasePassword } from './config.js'
+const config = require('./config')
 import { Respuestas } from "./models/respuestas";
 import { Preguntas } from "./models/preguntas";
 import { Casospositivos } from "./models/casospositivos";
 import { Casospositivosxrespuestas } from "./models/casospositivosxrespuestas";
 import { Variables } from './models/variables'
+import { Casos } from "./models/casos";
+import { Casosxestados } from "./models/casosxestados";
+import { Departamentos } from './models/departamentos'
+import { Provincias } from './models/provincias'
+import { Municipios } from './models/municipios'
+import { Distritos } from './models/distritos'
+import { Casosxrespuestas } from './models/casosxrespuestas';
 
 class App {
     public app: express.Application;
@@ -34,18 +41,27 @@ class App {
         });
         this.app.use(bodyParser.json())
         this.app.use(bodyParser.urlencoded({extended: false}));
+        
         createConnection({
             type: 'postgres',
-            host: databaseHost,
-            database: databaseSchema,
-            port: Number(databasePort),
-            username: databaseUsername,
-            password: databasePassword,
+            host: config.databaseHost,
+            database: config.databaseSchema,
+            port: Number(config.databasePort),
+            username: config.databaseUsername,
+            password: config.databasePassword,
             entities: [
                 Preguntas,
                 Respuestas,
                 Casospositivos,
                 Casospositivosxrespuestas,
+                Variables,
+                Casos,
+                Casosxestados,
+                Casosxrespuestas,
+                Departamentos,
+                Provincias,
+                Municipios,
+                Distritos,
                 Variables
             ],
             synchronize: false,
