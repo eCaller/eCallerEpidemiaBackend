@@ -38,14 +38,14 @@ export class PreguntaService {
             // Recuperamos los posibles casos positivos y los mapeamos solo a su ID
             let casosPositivos = await getConnection().getRepository(Casospositivos).find({relations: ['respuestas']});
             let casosMapeados = PreguntaService.mapearCasosPositivos(casosPositivos);
-            
+
             /**
              * La idea es, recorrer cada posible positivo y ver si las respuestas
              * que cumplen el criteria de que sea un positivo están activas.
              * casoMapeado contiene un array con las ids de las respuestas positivas
              * necesaria para ese caso, ejemplo:
              * casoMapeado = [3, 5 , 7]
-             * Para el ejemplo expuesto, se trataría de un positivo, si las respuestas 3, 5 y 7 se 
+             * Para el ejemplo expuesto, se trataría de un positivo, si las respuestas 3, 5 y 7 se
              * han constestado de forma positiva
              */
             for (let casoMapeado of casosMapeados) {
@@ -53,11 +53,11 @@ export class PreguntaService {
                 // para este caso
                 let matches = 0;
                 for (let pregunta of preguntrasRespondidas) {
-                    
+
                     if (pregunta.tipo.toUpperCase() === 'R') {
                         // En las pregunta de tipo R, value contendrá el id de la respuesta
                         // que se ha seleccionado
-                        if (pregunta.value != undefined && casoMapeado.includes(Number(pregunta.value))) {                 
+                        if (pregunta.value != undefined && casoMapeado.includes(Number(pregunta.value))) {
                             // Hemos encontrado una pregunta con una respuesta para este caso positivo
                             matches++;
                         }
@@ -70,7 +70,7 @@ export class PreguntaService {
                                 // Hemos encontrado una respuesta con un valor positivo que su id
                                 // se encuentra en la lista de casos positivos
                                 matches++;
-                            } 
+                            }
                         }
                     } else {
                         console.log('Tipo de pregunta incorrecto.')
@@ -87,7 +87,7 @@ export class PreguntaService {
                     break;
                 }
             }
-            res.status(200).send(isPositivo);           
+            res.status(200).send(isPositivo);          
         } catch (error) {
             res.status(500).send('Ha ocurrido un error al comprobar el triage.');
         }
