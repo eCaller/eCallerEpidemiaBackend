@@ -10,7 +10,7 @@
     "prod": "npm run build && npm run start"
   },
   "author": "Jose Alberto Martín Torres",
-  "license": "ISC",
+  "license": "GPL-3.0",
   "dependencies": {
     "@types/express": "^4.17.3",
     "@types/node": "^13.9.8",
