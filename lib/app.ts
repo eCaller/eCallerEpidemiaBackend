@@ -31,6 +31,7 @@ import { Provincias } from './models/provincias'
 import { Municipios } from './models/municipios'
 import { Distritos } from './models/distritos'
 import { Casosxrespuestas } from './models/casosxrespuestas';
+import { Usuarios } from "./models/usuarios";
 
 class App {
     public app: express.Application;
@@ -77,7 +78,8 @@ class App {
                 Provincias,
                 Municipios,
                 Distritos,
-                Variables
+                Variables,
+                Usuarios
             ],
             synchronize: false,
             logging: true

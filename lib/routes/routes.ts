@@ -18,6 +18,7 @@ import { CasospositivosService } from '../services/casospositivosService';
 import { VariablesService } from '../services/variablesService';
 import { CasosService } from '../services/casosService';
 import { TerritoriosService } from '../services/territoriosService';
+import { LoginService } from '../services/loginService';
 
 export class Routes {
 
@@ -26,8 +27,11 @@ export class Routes {
     public variablesService: VariablesService = new VariablesService();
     public casosService: CasosService = new CasosService();
     public territoriosService: TerritoriosService = new TerritoriosService();
+    public loginService: LoginService = new LoginService();
 
     public routes(app): void {
+        app.route('/autenticacion/login')
+            .get(this.loginService.login)
         app.route('/triage')
             .get(this.preguntaService.findAllPreguntas)
             .post(this.preguntaService.savetriage)
