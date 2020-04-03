@@ -26,12 +26,11 @@ export class LoginService {
         if (auth != undefined) {
             let tmp = auth.split(' ');
             let decoded = Buffer.from(tmp[1], 'base64');
+
             let datosUsuario = decoded.toString().split(':');
-            
             let usuario = datosUsuario[0];
             let pass = datosUsuario[1];
-            console.log(usuario);
-            console.log(pass);
+            
             let usuarioBBDD: Usuarios[] = await getConnection().getRepository(Usuarios).find({where: {'username': usuario}});
             if (usuarioBBDD[0] != null) {
                 if (pass === Buffer.from(usuarioBBDD[0].password, 'base64').toString()) {                    
