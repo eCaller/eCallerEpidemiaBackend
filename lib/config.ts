@@ -13,18 +13,17 @@
  * 
  * @author jamartin@ingenia.es
  */
-import app from './app';
-const fs  = require('fs');
-//const http = require('http');
-const https = require('https');
-const config = require('./config')
+require('dotenv').config({
+    debug: true,
+    //path:'testing' // Busca en la raiz
+})
 
-// Son certificados de prueba
-const privateKey  = fs.readFileSync('selfsigned.key', 'utf8');
-const certificate = fs.readFileSync('selfsigned.crt', 'utf8');
-let credentials = {key: privateKey, cert: certificate};
-
-//let httpServer = http.createServer(app);
-let httpsServer = https.createServer(credentials, app);
-//httpServer.listen(httpPort);
-httpsServer.listen(config.httpsPort);
+module.exports = {
+    httpPort: process.env.HTTP_PORT,
+    httpsPort: process.env.HTTPS_PORT,
+    databaseHost: process.env.DATABASE_HOST,
+    databaseSchema: process.env.DATABASE_SCHEMA,
+    databasePort: process.env.DATABASE_PORT,
+    databaseUsername: process.env.DATABASE_USERNAME,
+    databasePassword: process.env.DATABASE_PASSWORD
+}

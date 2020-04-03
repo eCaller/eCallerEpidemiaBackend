@@ -13,27 +13,23 @@
  * 
  * @author jamartin@ingenia.es
  */
-import { Entity, Column, PrimaryGeneratedColumn, Index, ManyToMany, JoinTable } from 'typeorm'
-import { Respuestas } from './respuestas';
+import { Entity, Column, PrimaryGeneratedColumn, Index, OneToMany } from 'typeorm'
+import { Provincias } from './provincias';
 
 @Entity()
-export class Casospositivos {
+export class Departamentos {
 
     @Index()
     @PrimaryGeneratedColumn()
     id: number;
+    @Column()
+    nombre: string;
+    @Column()
+    lat: number;
+    @Column()
+    lng: number;
 
-    @ManyToMany(type => Respuestas, respuestas => respuestas.casospositivos)
-    @JoinTable({
-        name: "casospositivosxrespuestas",
-        joinColumn: {
-            name: "idcasopositivo",
-            referencedColumnName: "id"
-        },
-        inverseJoinColumn: {
-            name: "idrespuesta",
-            referencedColumnName: "id"
-        }
-    })
-    respuestas: Respuestas[];
+    @OneToMany(type => Provincias, provincias => provincias.departamento)
+    provincias: Provincias[];
+
 }
