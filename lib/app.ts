@@ -15,7 +15,8 @@
  */
 import * as express from "express";
 import * as bodyParser from "body-parser";
-import { Routes } from './routes/routes';
+import { RoutesWeb } from './routes/routesWeb';
+import { RoutesMovil } from './routes/routesMovil';
 import "reflect-metadata"; // Import para typerom
 import { createConnection } from 'typeorm';
 const config = require('./config')
@@ -37,12 +38,14 @@ import { Centros } from "./models/centros";
 
 class App {
     public app: express.Application;
-    public rutas: Routes = new Routes();
+    public rutasWeb: RoutesWeb = new RoutesWeb();
+    public rutasMovil: RoutesMovil = new RoutesMovil();
 
     constructor() {
         this.app = express();
         this.config();
-        this.rutas.routes(this.app);
+        this.rutasWeb.routes(this.app);
+        this.rutasMovil.routes(this.app);
     }
 
     private config(): void {
@@ -59,7 +62,7 @@ class App {
         });
         this.app.use(bodyParser.json())
         this.app.use(bodyParser.urlencoded({extended: false}));
-
+        this.app.disable('x-powered-by');
         createConnection({
             type: 'postgres',
             host: config.databaseHost,

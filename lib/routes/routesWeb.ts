@@ -21,7 +21,7 @@ import { TerritoriosService } from '../services/territoriosService';
 import { LoginService } from '../services/loginService';
 import { HealthService } from '../services/healthService';
 
-export class Routes {
+export class RoutesWeb {
 
     public preguntaService: PreguntaService = new PreguntaService();
     public casospositivosService: CasospositivosService = new CasospositivosService();
@@ -44,11 +44,8 @@ export class Routes {
         app.route('/variables')
             .get(this.variablesService.findAllVariables)
             .put(this.variablesService.saveVariables)
-        app.route('/comprobarTriage')
-            .post(this.preguntaService.comprobarTriage)
         app.route('/caso')
             .get(this.casosService.findCasos)
-            .post(this.casosService.crearCaso)
             .put(this.casosService.saveCaso)
         app.route('/caso/:tagId')
             .get(this.casosService.getCaso)
