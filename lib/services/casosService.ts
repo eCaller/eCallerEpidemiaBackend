@@ -135,7 +135,6 @@ export class CasosService {
             mensaje: ''
         }
         try {
-            console.log('creando Caso')
             let entities = req.body;
             if (entities.caso != undefined && entities.preguntas != undefined) {
                 let caso: Casos = entities.caso;
@@ -214,6 +213,7 @@ export class CasosService {
                     newCaso.nombre = caso.nombre;
                     newCaso.estado = 'PC';
                     newCaso.telefono = caso.telefono;
+                    newCaso.municipio = caso.municipio;
                     newCaso.fecha = caso.fecha;
                     newCaso.lat = caso.lat;
                     newCaso.lng = caso.lng;
