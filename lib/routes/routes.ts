@@ -1,16 +1,16 @@
-/** 
+/**
  * Copyright 2020, Ingenia, S.A.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * @author jamartin@ingenia.es
  */
 import { PreguntaService } from '../services/preguntaService';
@@ -35,6 +35,8 @@ export class Routes {
         app.route('/triage')
             .get(this.preguntaService.findAllPreguntas)
             .post(this.preguntaService.savetriage)
+        app.route('/triage/caso/:tagId')
+            .get(this.preguntaService.findTriagecaso)
         app.route('/casospositivos')
             .get(this.casospositivosService.findAllCasospositivos)
         app.route('/variables')
@@ -43,7 +45,10 @@ export class Routes {
         app.route('/comprobarTriage')
             .post(this.preguntaService.comprobarTriage)
         app.route('/caso')
+            .get(this.casosService.findCasos)
             .post(this.casosService.crearCaso)
+        app.route('/caso/:tagId')
+            .get(this.casosService.getCaso)
         app.route('/caso/resumen')
             .get(this.casosService.getResumen)
         app.route('/caso/estadisticas')

@@ -1,16 +1,16 @@
-/** 
+/**
  * Copyright 2020, Ingenia, S.A.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * @author jamartin@ingenia.es
  */
 import { Request, Response } from 'express';
@@ -19,6 +19,7 @@ import { Preguntas } from '../models/preguntas';
 import { Respuestas } from '../models/respuestas';
 import { Casospositivos } from '../models/casospositivos';
 import { Casospositivosxrespuestas } from '../models/casospositivosxrespuestas';
+import { Casosxrespuestas } from '../models/casosxrespuestas';
 
 export class PreguntaService {
     public async findAllPreguntas (req: Request, res: Response) {
@@ -41,6 +42,49 @@ export class PreguntaService {
             res.sendStatus(500);
         }
 
+    }
+
+    /**
+      Recupera las preguntas y respuestas de un caso a partir de su id
+    */
+    public async findTriagecaso (req: Request, res: Response) {
+        console.log('findTriagecaso');
+        console.log(req.params.tagId);
+
+        let ret = {
+            success: false,
+            data: null,
+            message: null
+        };
+
+        let id = req.params.tagId;
+
+        try {
+          let triage = await getConnection().createQueryBuilder()
+              .select("p.id", "idpregunta")
+              .addSelect("p.pregunta", "pregunta")
+              .addSelect("r.id", "idrespuesta")
+              .addSelect("r.respuesta", "respuesta")
+              .from(Casosxrespuestas, "cxr")
+              .innerJoin("cxr.respuestas", "r")
+              .innerJoin("r.pregunta", "p")
+              .where("cxr.idcaso = :id", { id: id })
+              .orderBy("p.orden", "ASC")
+              .addOrderBy("r.orden", "ASC")
+              .execute();
+
+          ret.success = true;
+          ret.message = null;
+          ret.data = triage;
+
+          console.log(ret)
+          res.status(200).send(ret);
+        } catch (error) {
+          console.error(error);
+          ret.success = false;
+          ret.message = error;
+          res.status(400).send(ret);
+        }
     }
 
     public async comprobarTriage(req: Request, res: Response) {
@@ -102,7 +146,7 @@ export class PreguntaService {
                     break;
                 }
             }
-            res.status(200).send(isPositivo);          
+            res.status(200).send(isPositivo);
         } catch (error) {
             res.status(500).send('Ha ocurrido un error al comprobar el triage.');
         }

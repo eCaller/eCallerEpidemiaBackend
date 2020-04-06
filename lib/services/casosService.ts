@@ -1,28 +1,134 @@
-/** 
+/**
  * Copyright 2020, Ingenia, S.A.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * @author jamartin@ingenia.es
  */
 import { Request, Response } from 'express';
-import { getConnection } from 'typeorm';
+import { getConnection, In, Like } from 'typeorm';
 import { Casos } from '../models/casos'
 import { Casosxestados } from '../models/casosxestados';
 import { Preguntas } from '../models/preguntas';
 import { PreguntaService } from './preguntaService';
 import { Respuestas } from '../models/respuestas';
 import { Casosxrespuestas } from '../models/casosxrespuestas';
+import { Listados } from '../models/listados';
+import { ILike } from '../utils/ILike';
 
 export class CasosService {
+
+    public async findCasos(req: Request, res: Response) {
+      console.log('findCasos');
+      console.log(req.query);
+
+      //Filtro estados
+      let filtroestado = {estado: In(['PC', 'CO'])};
+      if (req.query.estados) {
+        if (req.query.estados === "cita") {
+          filtroestado = {estado: In(['PC', 'CO'])};
+        } else if (req.query.estados === "fisica") {
+          filtroestado = {estado: In(['PT', 'PR'])};
+        } else if (req.query.estados === "evolucion") {
+          filtroestado = {estado: In(['PE', 'FI'])};
+        }
+      }
+
+      //Filtro genérico
+      let filtro = [];
+      if (req.query.filter && req.query.filter.length>0) {
+        let f = "%" + req.query.filter + "%";
+
+        let filtronombre = Object.assign({}, filtroestado);
+        filtronombre["nombre"] = ILike(f);
+        filtro.push(filtronombre);
+
+        let filtrocod = Object.assign({}, filtroestado);
+        filtrocod["codigo"] = ILike(f);
+        filtro.push(filtrocod);
+
+        let filtrodir = Object.assign({}, filtroestado);
+        filtrodir["direccion"] = ILike(f);
+        filtro.push(filtrodir);
+
+      } else {
+        filtro.push(filtroestado);
+      }
+
+      //Orden
+      let orden = {};
+      if (req.query.sort) {
+        let or = req.query.sort.split("|");
+        orden[or[0]] = or[1].toUpperCase();
+      }
+
+      //Paginación
+      let pagina=(req.query.page?req.query.page:1)-1;
+      let filas= (req.query.per_page?req.query.per_page:10);
+      pagina=pagina * filas;
+
+      try {
+        //Consulta
+        let [list, count] = await getConnection().getRepository(Casos).findAndCount({
+                    where: filtro,
+                    order: orden,
+                    take: filas,
+                    skip: pagina
+                  });
+
+        let ret = new Listados<Casos>();
+        ret.total=count;
+        ret.per_page=list.length;
+        ret.current_page=pagina;
+        ret.last_page= (filas === 0 ? 0 : Math.ceil(count / filas));
+        ret.from=pagina;
+        ret.to=list.length;
+        ret.data = list;
+
+        res.status(200).send(ret);
+      } catch (error) {
+        console.error(error);
+        res.sendStatus(400);
+      }
+    }
+
+    public async getCaso (req: Request, res: Response) {
+      console.log('getCaso');
+      console.log(req.params.tagId);
+
+      let ret = {
+          success: false,
+          data: null,
+          message: null
+      };
+
+      let id = req.params.tagId;
+
+      try {
+        let caso = await getConnection().getRepository(Casos).findOne({relations: ["casosxestados"], where: {id: id}});
+
+        ret.success = true;
+        ret.message = null;
+        ret.data = caso;
+
+        res.status(200).send(ret);
+      } catch (error) {
+        console.error(error);
+        ret.success = false;
+        ret.message = error;
+        res.status(400).send(ret);
+      }
+
+    }
+
     public async crearCaso (req: Request, res: Response) {
         let errores = {
             existenErrores: false,
@@ -124,7 +230,7 @@ export class CasosService {
                     newCasoXEstado = await getConnection().manager.save(newCasoXEstado);
 
                     // Ahora que tenemos creado el caso, vamos a asociar las respuestas positivas
-                    // con el caso 
+                    // con el caso
                     let respuestasIds: number[] = [];
                     //Las preguntas pueden ser de tipo R o C
                     respuestasIds = PreguntaService.extraerIdRespuestasContestadas(preguntas);
@@ -138,8 +244,8 @@ export class CasosService {
                         casoxrespuesta.respuestas = respuestaBBDD;
                         casoxrespuesta.casos = newCaso;
                         casosxrespuestas.push(casoxrespuesta);
-                    }                     
-                    await getConnection().createQueryBuilder().insert().into(Casosxrespuestas).values(casosxrespuestas).execute();            
+                    }
+                    await getConnection().createQueryBuilder().insert().into(Casosxrespuestas).values(casosxrespuestas).execute();
 
                 }
             } else {
