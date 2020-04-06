@@ -113,7 +113,7 @@ export class CasosService {
       let id = req.params.tagId;
 
       try {
-        let caso = await getConnection().getRepository(Casos).findOne({relations: ["casosxestados"], where: {id: id}});
+        let caso = await getConnection().getRepository(Casos).findOne({relations: ["casosxestados", "municipio"], where: {id: id}});
 
         ret.success = true;
         ret.message = null;

@@ -13,9 +13,10 @@
  *
  * @author jamartin@ingenia.es
  */
-import { Entity, Column, PrimaryGeneratedColumn, Index, OneToMany, ManyToMany, JoinTable } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, Index, OneToMany, ManyToMany, ManyToOne, JoinTable, JoinColumn } from 'typeorm'
 import { Casosxestados } from './casosxestados';
 import { Respuestas } from './respuestas';
+import { Municipios } from './municipios';
 
 @Entity()
 export class Casos {
@@ -51,6 +52,13 @@ export class Casos {
     resultadotest: string;
     @Column()
     resultado: string;
+
+    @ManyToOne(type => Municipios, municipio => municipio.casos)
+    @JoinColumn({
+        name: 'idmunicipio',
+        referencedColumnName: 'id'
+    })
+    municipio: Municipios;
 
     @OneToMany(type => Casosxestados, casosxestado => casosxestado.caso)
     casosxestados: Casosxestados[];
