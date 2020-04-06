@@ -21,6 +21,8 @@ import { Preguntas } from '../models/preguntas';
 import { PreguntaService } from './preguntaService';
 import { Respuestas } from '../models/respuestas';
 import { Casosxrespuestas } from '../models/casosxrespuestas';
+import { Citas } from '../models/citas';
+
 import { Listados } from '../models/listados';
 import { ILike } from '../utils/ILike';
 
@@ -113,7 +115,7 @@ export class CasosService {
       let id = req.params.tagId;
 
       try {
-        let caso = await getConnection().getRepository(Casos).findOne({relations: ["casosxestados", "municipio"], where: {id: id}});
+        let caso = await CasosService.getCasoById (id);
 
         ret.success = true;
         ret.message = null;
@@ -127,6 +129,16 @@ export class CasosService {
         res.status(400).send(ret);
       }
 
+    }
+
+    private static async getCasoById (id) {
+      let caso = await getConnection().getRepository(Casos).findOne({relations: ["casosxestados", "municipio", "citas"], where: {id: id}});
+
+      if (caso) {
+        return caso;
+      } else {
+        return null;
+      }
     }
 
     public async crearCaso (req: Request, res: Response) {
@@ -262,6 +274,108 @@ export class CasosService {
             res.sendStatus(400);
         } else {
             res.sendStatus(200);
+        }
+    }
+
+    public async saveCaso (req: Request, res: Response) {
+      let ret = {
+          success: false,
+          data: null,
+          message: null
+      };
+      try {
+          console.log('saveCaso')
+          let caso = req.body;
+          // console.log(caso);
+
+          if (caso) {
+            //Añadimos a casosxestado el caso para que no actualice los que ya existen a null
+
+            //Si el caso es CO, en la tabla casosxestado el nuevo estado
+            if (caso.estado==='CO') {
+              //Si ya estaba no lo vuelve a insertar
+              let cxe = await getConnection().getRepository(Casosxestados).findOne({where: {caso: caso, estado:'CO'}});
+
+              if (!cxe) {
+                let newCasoXEstado: Casosxestados = new Casosxestados();
+                newCasoXEstado.estado = caso.estado;
+                newCasoXEstado.fecha = new Date();
+                newCasoXEstado.caso = caso;
+                newCasoXEstado = await getConnection().getRepository(Casosxestados).save(newCasoXEstado);
+
+                //lo añadimos al caso
+                if (!caso.casosxestados) {
+                  caso.casosxestados = [];
+                }
+                caso.casosxestados.push(newCasoXEstado);
+              }
+            }
+
+            //Si se añade un resultadotest, y no está en estado 'PE' o 'FI', pasa a estado 'PE'
+            if (caso.resultadotest !== null && caso.estado!=='PE' && caso.estado!=='FI') {
+              caso.estado='PE';
+              if (caso.resultadotest === 'N') {
+                caso.estado='FI';
+              }
+
+              //insertamos en la tabla casosxestado el nuevo estado
+              let newCasoXEstado: Casosxestados = new Casosxestados();
+              newCasoXEstado.estado = caso.estado;
+              newCasoXEstado.fecha = new Date();
+              newCasoXEstado.caso = caso;
+              newCasoXEstado = await getConnection().getRepository(Casosxestados).save(newCasoXEstado);
+
+              //lo añadimos al caso
+              if (!caso.casosxestados) {
+                caso.casosxestados = [];
+              }
+              caso.casosxestados.push(newCasoXEstado);
+            }
+
+            //Si se añade un resultado, pasa a estado 'FI'
+            if (caso.resultado !== null) {
+              caso.estado='FI';
+
+              //insertamos en la tabla casosxestado el nuevo estado
+              let newCasoXEstado: Casosxestados = new Casosxestados();
+              newCasoXEstado.estado = caso.estado;
+              newCasoXEstado.fecha = new Date();
+              newCasoXEstado.caso = caso;
+              newCasoXEstado = await getConnection().getRepository(Casosxestados).save(newCasoXEstado);
+
+              //lo añadimos al caso
+              if (!caso.casosxestados) {
+                caso.casosxestados = [];
+              }
+              caso.casosxestados.push(newCasoXEstado);
+            }
+
+            //Las citas. Si la fecha es null, no guardamos la cita ¡¡De momento sólo se permite una cita!!
+            if (caso.citas && caso.citas.length>0 && (!caso.citas[0].fecha || caso.citas[0].fecha==='')) {
+              caso.citas = null;
+            }
+
+            await getConnection().getRepository(Casos).save(caso);
+
+            //Recuperamos los datos a devolver (con el formato a devolver)
+            let udatedCaso = await CasosService.getCasoById (caso.id);
+            ret.success = true;
+            ret.message = null;
+            ret.data = udatedCaso;
+          } else {
+              ret.success = false;
+              ret.message = 'No se ha encontrado el caso';
+          }
+        } catch (error) {
+            console.error(error);
+            ret.success = false;
+            ret.message = 'Ha ocurrido un error al guardar el caso';
+        }
+
+        if (!ret.success) {
+            res.status(400).send(ret);
+        } else {
+            res.status(200).send(ret);
         }
     }
 

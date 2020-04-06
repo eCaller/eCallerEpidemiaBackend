@@ -17,6 +17,7 @@ import { Entity, Column, PrimaryGeneratedColumn, Index, OneToMany, ManyToMany, M
 import { Casosxestados } from './casosxestados';
 import { Respuestas } from './respuestas';
 import { Municipios } from './municipios';
+import { Citas } from './citas';
 
 @Entity()
 export class Casos {
@@ -70,5 +71,8 @@ export class Casos {
     //   inverseJoinColumns: [{ name: "idrespuesta" }]
     // })
     respuestas: Respuestas[];
+
+    @OneToMany(type => Citas, citas => citas.caso)
+    citas: Citas[];
 
 }

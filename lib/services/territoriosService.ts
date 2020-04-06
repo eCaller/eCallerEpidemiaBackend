@@ -19,8 +19,21 @@ import { Provincias } from '../models/provincias'
 import { Municipios } from '../models/municipios';
 import { Distritos } from '../models/distritos';
 import { Departamentos } from '../models/departamentos';
+import { Centros } from '../models/centros';
 
 export class TerritoriosService {
+
+    public async findAllCentros (req: Request, res: Response) {
+        try {
+            console.log("findAllCentros");
+            let entity = await getConnection().getRepository(Centros).find({order: {nombre: "ASC"}});
+            res.send(entity);
+        } catch (error) {
+            res.sendStatus(500);
+        }
+
+    }
+
     public async findAllDepartamentos (req: Request, res: Response) {
         try {
             console.log("findAllDepartamentos");

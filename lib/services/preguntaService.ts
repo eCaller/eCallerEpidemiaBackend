@@ -77,7 +77,7 @@ export class PreguntaService {
           ret.message = null;
           ret.data = triage;
 
-          console.log(ret)
+          // console.log(ret)
           res.status(200).send(ret);
         } catch (error) {
           console.error(error);
