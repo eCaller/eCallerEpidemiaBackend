@@ -25,7 +25,7 @@ export class Citas {
     id: number;
     @Column()
     fecha: Date;
-    @Column()
+    @Column({ type: "time"})
     hora: Date;
     @Column()
     tipo: string;

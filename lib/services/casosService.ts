@@ -121,6 +121,7 @@ export class CasosService {
         ret.message = null;
         ret.data = caso;
 
+        //console.log(caso);
         res.status(200).send(ret);
       } catch (error) {
         console.error(error);
@@ -132,7 +133,7 @@ export class CasosService {
     }
 
     private static async getCasoById (id) {
-      let caso = await getConnection().getRepository(Casos).findOne({relations: ["casosxestados", "municipio", "citas"], where: {id: id}});
+      let caso = await getConnection().getRepository(Casos).findOne({relations: ["casosxestados", "municipio", "citas", "citas.centro"], where: {id: id}});
 
       if (caso) {
         return caso;
@@ -286,7 +287,7 @@ export class CasosService {
       try {
           console.log('saveCaso')
           let caso = req.body;
-          // console.log(caso);
+          console.log(caso);
 
           if (caso) {
             //Añadimos a casosxestado el caso para que no actualice los que ya existen a null
@@ -351,10 +352,43 @@ export class CasosService {
             }
 
             //Las citas. Si la fecha es null, no guardamos la cita ¡¡De momento sólo se permite una cita!!
-            if (caso.citas && caso.citas.length>0 && (!caso.citas[0].fecha || caso.citas[0].fecha==='')) {
-              caso.citas = null;
+            if (caso.citas && caso.citas.length>0) {
+              let changeEstado = false;
+              for (let i in caso.citas) {
+                if (!caso.citas[i].fecha || caso.citas[i].fecha==='') {
+                  caso.citas.splice(i, 1);
+                } else {
+                  caso.citas[i]["caso"] = caso;
+                  caso.citas[i].fecha=new Date(caso.citas[i].fecha);
+                  caso.citas[i].hora=new Date(caso.citas[i].hora);
+                  if (caso.citas[i].id===null) {
+                    changeEstado = true;
+                  }
+                  //console.log(caso.citas[i])
+                  await getConnection().getRepository(Citas).save(caso.citas[i]);
+                }
+              }
+
+              //Si antes no existía cita y estamos en estado 'PC' o 'CO', el estado cambia a 'PT' y guardamos en casosxestados
+              if (changeEstado && (caso.estado==='PC' || caso.estado==='CO')) {
+                caso.estado='PT';
+
+                //insertamos en la tabla casosxestado el nuevo estado
+                let newCasoXEstado: Casosxestados = new Casosxestados();
+                newCasoXEstado.estado = caso.estado;
+                newCasoXEstado.fecha = new Date();
+                newCasoXEstado.caso = caso;
+                newCasoXEstado = await getConnection().getRepository(Casosxestados).save(newCasoXEstado);
+
+                //lo añadimos al caso
+                if (!caso.casosxestados) {
+                  caso.casosxestados = [];
+                }
+                caso.casosxestados.push(newCasoXEstado);
+              }
             }
 
+            //console.log(caso);
             await getConnection().getRepository(Casos).save(caso);
 
             //Recuperamos los datos a devolver (con el formato a devolver)
@@ -377,6 +411,36 @@ export class CasosService {
         } else {
             res.status(200).send(ret);
         }
+    }
+
+    public async getContadores (req: Request, res: Response) {
+      console.log('getContadores')
+      let ret = {
+          success: false,
+          data: null,
+          message: null
+      };
+
+      try {
+        let contadores = {pendientes: 0, programados: 0, evolucion: 0};
+
+        let c = await getConnection().manager.count(Casos, {estado: In(['PC', 'CO'])});
+        contadores.pendientes = c;
+
+        c = await getConnection().manager.count(Casos, {estado: In(['PT', 'PR'])});
+        contadores.programados = c;
+
+        c = await getConnection().manager.count(Casos, {estado: In(['PE', 'FI'])});
+        contadores.evolucion = c;
+
+        ret.success = true;
+        ret.message = null;
+        ret.data = contadores;
+        res.status(200).send(ret);
+      } catch (error) {
+          console.error(error);
+          res.sendStatus(400);
+      }
     }
 
     public async getCasosMapa (req: Request, res: Response) {

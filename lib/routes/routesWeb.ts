@@ -49,6 +49,8 @@ export class RoutesWeb {
             .put(this.casosService.saveCaso)
         app.route('/caso/:tagId')
             .get(this.casosService.getCaso)
+        app.route('/casos/contadores')
+            .get(this.casosService.getContadores)
         app.route('/casos/resumen')
             .get(this.casosService.getResumen)
         app.route('/casos/estadisticas')
