@@ -13,11 +13,12 @@
  * 
  * @author jamartin@ingenia.es
  */
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, Index } from 'typeorm'
 
 @Entity()
 export class Usuarios {
 
+    @Index()
     @PrimaryGeneratedColumn()
     id: number;
     @Column()

@@ -20,6 +20,7 @@ import { RoutesMovil } from './routes/routesMovil';
 import "reflect-metadata"; // Import para typerom
 import { createConnection } from 'typeorm';
 const config = require('./config')
+const passport = require('passport');
 import { Respuestas } from "./models/respuestas";
 import { Preguntas } from "./models/preguntas";
 import { Casospositivos } from "./models/casospositivos";
@@ -35,15 +36,18 @@ import { Casosxrespuestas } from './models/casosxrespuestas';
 import { Usuarios } from "./models/usuarios";
 import { Citas } from "./models/citas";
 import { Centros } from "./models/centros";
+import { Passport } from './passport'
 
 class App {
     public app: express.Application;
     public rutasWeb: RoutesWeb = new RoutesWeb();
     public rutasMovil: RoutesMovil = new RoutesMovil();
+    public passportStart: Passport = new Passport();
 
     constructor() {
         this.app = express();
         this.config();
+        this.passportStart.init();
         this.rutasWeb.routes(this.app);
         this.rutasMovil.routes(this.app);
     }
@@ -62,6 +66,8 @@ class App {
         });
         this.app.use(bodyParser.json())
         this.app.use(bodyParser.urlencoded({extended: false}));
+        this.app.use(passport.initialize())
+
         this.app.disable('x-powered-by');
         createConnection({
             type: 'postgres',

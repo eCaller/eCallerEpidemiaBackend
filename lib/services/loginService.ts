@@ -13,41 +13,51 @@
  * 
  * @author jamartin@ingenia.es
  */
-import { Request, Response } from 'express';
-import { getConnection } from 'typeorm';
+import { Response } from 'express';
 import { Usuarios } from '../models/usuarios';
+const config = require('../config');
+const jwt = require('jsonwebtoken');
 
 export class LoginService {
-
     
-    public async login (req: Request, res: Response) {        
-        let headers = req.headers;
-        let auth = headers.authorization;
-        if (auth != undefined) {
-            let tmp = auth.split(' ');
-            let decoded = Buffer.from(tmp[1], 'base64');
+    /**
+     * Cuando se entre en este método, será una vez que ya se ha pasado por
+     * el passport 'local' y el usuario autenticado se encuentra en req.user
+     */
+    public async login (req, res: Response) {
+        let usuario: Usuarios = req.user;
 
-            let datosUsuario = decoded.toString().split(':');
-            let usuario = datosUsuario[0];
-            let pass = datosUsuario[1];
-            
-            let usuarioBBDD: Usuarios[] = await getConnection().getRepository(Usuarios).find({where: {'username': usuario}});
-            if (usuarioBBDD[0] != null) {
-                if (pass === Buffer.from(usuarioBBDD[0].password, 'base64').toString()) {                    
-                    res.status(200).send({
-                        id: usuarioBBDD[0].id,
-                        nombre: usuarioBBDD[0].nombre,
-                        username: usuarioBBDD[0].username,
-                        imagen: usuarioBBDD[0].imagen,
-                        rol: usuarioBBDD[0].rol
-                    });
-                } else {
-                    res.sendStatus(404);
-                }               
-            } else {                
-                res.sendStatus(404);
+        // Información que va a contener el JWT
+        const payload = {
+            userid: usuario.id,
+            username: usuario.username,
+            expires: Date.now() + parseInt(config.tokenMsExpires),
+        };
+
+        /** assigns payload to req.user */
+        req.login(payload, {session: false}, (error) => {
+            if (error) {
+                res.status(400).send({ error });
             }
-        }
+
+            /** generate a signed json web token and return it in the response */
+            let token = jwt.sign(JSON.stringify(payload), config.secret);
+
+            /** assign our jwt to the cookie */
+            //res.cookie('jwt', token, { httpOnly: true, secure: true });
+            res.status(200).send({ 
+                username: usuario.username, 
+                nombre: usuario.nombre,
+                rol: usuario.rol,
+                imagen: usuario.imagen ,
+                token: token  
+            });
+        });
+    }
+    
+    public async logout (req, res: Response) {
+        req.logout();
+        res.sendStatus(200);
     }
 
 }

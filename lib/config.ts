@@ -26,5 +26,7 @@ module.exports = {
     databasePort: process.env.DATABASE_PORT,
     databaseUsername: process.env.DATABASE_USERNAME,
     databasePassword: process.env.DATABASE_PASSWORD,
-    apiMovil: process.env.API_MOVIL
+    apiMovil: process.env.API_MOVIL,
+    secret: process.env.BACKEND_SECRET,
+    tokenMsExpires: process.env.JWT_EXPIRATION_MS
 }
