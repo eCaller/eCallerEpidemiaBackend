@@ -20,6 +20,7 @@ import { CasosService } from '../services/casosService';
 import { TerritoriosService } from '../services/territoriosService';
 import { LoginService } from '../services/loginService';
 import { HealthService } from '../services/healthService';
+import { ChartsService } from '../services/chartsService';
 
 export class RoutesWeb {
 
@@ -29,7 +30,9 @@ export class RoutesWeb {
     public casosService: CasosService = new CasosService();
     public territoriosService: TerritoriosService = new TerritoriosService();
     public loginService: LoginService = new LoginService();
-	public healthService: HealthService = new HealthService();
+    public healthService: HealthService = new HealthService();
+    public chartsService: ChartsService = new ChartsService();
+
 
     public routes(app): void {
         app.route('/autenticacion/login')
@@ -52,11 +55,11 @@ export class RoutesWeb {
         app.route('/casos/contadores')
             .get(this.casosService.getContadores)
         app.route('/casos/resumen')
-            .get(this.casosService.getResumen)
+            .get(this.chartsService.getResumen)
         app.route('/casos/estadisticas')
-            .get(this.casosService.getEstadisticas)
+            .get(this.chartsService.getEstadisticas)
         app.route('/casos/mapa')
-            .get(this.casosService.getCasosMapa)
+            .get(this.chartsService.getCasosMapa)
         app.route('/centros')
             .get(this.territoriosService.findAllCentros)
         app.route('/departamentos')
@@ -67,8 +70,8 @@ export class RoutesWeb {
             .get(this.territoriosService.findMunicipios)
         app.route('/distritos')
             .get(this.territoriosService.findDistritos)
-		app.route('/health/status')
-			.get(this.healthService.testStatus)
+    		app.route('/health/status')
+    			.get(this.healthService.testStatus)
 
     }
 }
