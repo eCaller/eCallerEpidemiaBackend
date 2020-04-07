@@ -21,6 +21,7 @@ import { TerritoriosService } from '../services/territoriosService';
 import { LoginService } from '../services/loginService';
 import { HealthService } from '../services/healthService';
 import { ChartsService } from '../services/chartsService';
+import { ConfiguracionService } from '../services/configuracionService';
 
 const passport = require('passport');
 
@@ -76,6 +77,8 @@ export class RoutesWeb {
             .get(passport.authenticate('jwt', {session: false}), this.territoriosService.findDistritos)
         app.route('/health/status')
             .get(this.healthService.testStatus)
+		app.route('/configuracionUsuario')
+            .post(this.configuracionService.updateUser)
 
     }
 }
