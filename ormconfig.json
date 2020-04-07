@@ -1,0 +1,25 @@
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "username": "ecaller",
+  "password": "ecaller",
+  "database": "ecaller",
+  "synchronize": true,
+  "logging": false,
+  "entities": [
+    "lib/models/**/*.ts"
+  ],
+  "migrations": [
+    "lib/migration/**/*.ts"
+  ],
+  "subscribers": [
+    "lib/subscriber/**/*.ts"
+  ],
+  "cli": {
+    "entitiesDir": "dist/models",
+    "migrationsDir": "dist/migration",
+    "subscribersDir": "dist/subscriber"
+  },
+  "migrationsRun": true
+}
