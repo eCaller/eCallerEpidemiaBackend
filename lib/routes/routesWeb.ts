@@ -35,6 +35,7 @@ export class RoutesWeb {
     public loginService: LoginService = new LoginService();
     public healthService: HealthService = new HealthService();
     public chartsService: ChartsService = new ChartsService();
+	public configuracionService: ConfiguracionService = new ConfiguracionService();
 
 
     public routes(app): void {
