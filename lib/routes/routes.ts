@@ -19,6 +19,7 @@ import { VariablesService } from '../services/variablesService';
 import { CasosService } from '../services/casosService';
 import { TerritoriosService } from '../services/territoriosService';
 import { LoginService } from '../services/loginService';
+import { ConfiguracionService } from '../services/configuracionService';
 
 export class Routes {
 
@@ -28,6 +29,7 @@ export class Routes {
     public casosService: CasosService = new CasosService();
     public territoriosService: TerritoriosService = new TerritoriosService();
     public loginService: LoginService = new LoginService();
+    public configuracionService: ConfiguracionService = new ConfiguracionService();
 
     public routes(app): void {
         app.route('/autenticacion/login')
@@ -58,6 +60,8 @@ export class Routes {
             .get(this.territoriosService.findMunicipios)
         app.route('/distritos')
             .get(this.territoriosService.findDistritos)
+        app.route('/configuracionUsuario')
+            .post(this.configuracionService.updateUser)
 
     }
 }
