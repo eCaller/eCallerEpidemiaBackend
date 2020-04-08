@@ -36,6 +36,45 @@ eCaller Epidemias está constituida por dos componentes software:
     4. Medición cualitativa y cuantitativamente del grado de evolución de la enfermedad.
     5. Identificación de las zonas de riesgo.
 
+## Instalación
+1. Clonar el repositorio en una carpeta local
+
+    * `git clone  https://github.com/eCaller/eCallerEpidemiaBackend.git`
+  
+    * `cd eCallerEpidemiaBackend`
+  
+2. Instalación librería
+    
+    * `npm install`
+
+    * `npm install tsc -g`
+    
+3. Configuración entorno
+
+    * cp .env.example .env
+    * Editar el fichero .env con las valores correctas para el entorno de ejecución
+
+## Ejecución en local
+
+Como requerimiento antes de ejecutar la aplicación debe existir el servidor de base de datos, actualmente Postgresql con versión >= 9.6, creando la base de datos desde los scripts. 
+
+1. Ejecución en modo desarrollo
+
+    * `npm run dev`
+   
+### Creación y ejecución de un contenedor Docker
+
+Como pasos previos se deberán realizar los pasos del apartado [Instalación](README.md#Instalación) y seguidamente realizar los siguientes pasos:
+
+1. Creación de la imagen Docker
+
+    `docker build -t ecaller-epidemias/ecaller-epidemias-backend .`
+
+2. Ejecución de la imagen Docker
+
+    `docker run -d -p 8443:8443 --rm --name ecaller-epidemas-backend-1 ecaller-epidemias/ecaller-epidemias-backend`
+	
+	
 ## Repositorios
 
 * **`App móvil`**.
