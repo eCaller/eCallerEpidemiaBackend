@@ -52,7 +52,7 @@ eCaller Epidemias está constituida por dos componentes software:
 3. Configuración entorno
 
     * cp .env.example .env
-    * Editar el fichero .env con las valores correctas para el entorno de ejecución
+    * Editar el fichero .env con los valores correctos para el entorno de ejecución
 
 ## Ejecución en local
 
