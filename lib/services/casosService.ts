@@ -312,6 +312,26 @@ export class CasosService {
               }
             }
 
+            //Si el caso es PR, en la tabla casosxestado el nuevo estado
+            if (caso.estado==='PR') {
+              //Si ya estaba no lo vuelve a insertar
+              let cxe = await getConnection().getRepository(Casosxestados).findOne({where: {caso: caso, estado:'PR'}});
+
+              if (!cxe) {
+                let newCasoXEstado: Casosxestados = new Casosxestados();
+                newCasoXEstado.estado = caso.estado;
+                newCasoXEstado.fecha = new Date();
+                newCasoXEstado.caso = caso;
+                newCasoXEstado = await getConnection().getRepository(Casosxestados).save(newCasoXEstado);
+
+                //lo añadimos al caso
+                if (!caso.casosxestados) {
+                  caso.casosxestados = [];
+                }
+                caso.casosxestados.push(newCasoXEstado);
+              }
+            }
+
             //Si se añade un resultadotest, y no está en estado 'PE' o 'FI', pasa a estado 'PE'
             if (caso.resultadotest !== null && caso.estado!=='PE' && caso.estado!=='FI') {
               caso.estado='PE';
