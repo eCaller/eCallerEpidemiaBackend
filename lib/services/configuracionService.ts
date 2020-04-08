@@ -20,22 +20,25 @@ const bcrypt = require ('bcrypt');
 
 export class ConfiguracionService {
 
-    public async updateUser (req: Request, res: Response) {
+    public async updatePassword(req: Request, res: Response) {
         try {
-          console.log("Actualizar usuario");
-
-          let response = req.body;
-          let variables = response.variables;
-          
-          //se encripta la pass
-          variables.password = await bcrypt.hash(variables.password, 10);
-          
-          await getConnection().getRepository(Usuarios).save(variables);
-
-          console.log("Usuario actualizado");
-          res.sendStatus(200);
+          let usuario = req.body;
+          let usuarioBBDD: Usuarios = await getConnection().getRepository(Usuarios).findOne({where: {'username': usuario.username}});
+          if (usuarioBBDD != null) {
+            usuarioBBDD.password = await bcrypt.hash(usuario.password, 10);
+            await getConnection().getRepository(Usuarios).save(usuarioBBDD);
+            res.sendStatus(200);
+          } else {
+            res.sendStatus(404);
+          }
         } catch (error) {
           res.sendStatus(500);
         }
+    }
+
+    public async checkPassword(req: Request, res: Response) {
+      // Si llega aquí, la password es correcta ya que la petición la procesa el 
+      // passport 'local'
+      res.sendStatus(200);
     }
 }

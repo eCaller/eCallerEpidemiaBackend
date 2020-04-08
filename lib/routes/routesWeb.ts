@@ -79,7 +79,9 @@ export class RoutesWeb {
         app.route('/health/status')
             .get(this.healthService.testStatus)
 		app.route('/configuracionUsuario')
-            .post(this.configuracionService.updateUser)
+            .post(passport.authenticate('jwt', {session: false}), this.configuracionService.updatePassword)
+        app.route('/checkPassword')
+            .post(passport.authenticate('local', {session: false}), this.configuracionService.checkPassword)
 
     }
 }
