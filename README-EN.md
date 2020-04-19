@@ -38,59 +38,52 @@ eCaller Epidemias consists of two software components:
     5. Identification of risk zones.
 
 ## Installation
-1. Clonar el repositorio en una carpeta local
 
+1. Clone the repository to a local folder:
     * `git clone  https://github.com/eCaller/eCallerEpidemiaBackend.git`
-  
     * `cd eCallerEpidemiaBackend`
-  
-2. Instalación librería
-    
+
+2. Library installation:
     * `npm install`
-
     * `npm install tsc -g`
-    
-3. Configuración entorno
 
+3. Setting the environment:
     * cp .env.example .env
-    * Editar el fichero .env con los valores correctos para el entorno de ejecución
+    * Edit the .env file with the correct values for the runtime environment.
 
-## Ejecución en local
+## Local execution
 
-Como requerimiento antes de ejecutar la aplicación debe existir el servidor de base de datos, actualmente Postgresql con versión >= 9.6, creando la base de datos desde los scripts. 
+As a requirement before executing the application, the database server must exist, currently Postgresql with version> = 9.6, creating the database from the scripts.
 
-1. Ejecución en modo desarrollo
-
+1. Running in development mode:
     * `npm run dev`
    
-### Creación y ejecución de un contenedor Docker
+## Create and run a Docker container
 
-Como pasos previos se deberán realizar los pasos del apartado [Instalación](README.md#Instalación) y seguidamente realizar los siguientes pasos:
+As previous steps, the steps in the [Installation](README-EN.md#Installation) section must be performed and then the following steps must be performed:
 
-1. Creación de la imagen Docker
-
+1. Docker image creation:
     `docker build -t ecaller-epidemias/ecaller-epidemias-backend .`
 
-2. Ejecución de la imagen Docker
-
+2. Docker image execution:
     `docker run -d -p 8443:8443 --rm --name ecaller-epidemas-backend-1 ecaller-epidemias/ecaller-epidemias-backend`
 
 ## Repositories
 
 * **`Mobile app`**.
-    - [eCallerEpidemiaMovil](https://github.com/eCaller/eCallerEpidemiaMovil/)
+    - [eCallerEpidemiaMovil](https://github.com/eCaller/eCallerEpidemiaMovil/blob/master/README-EN.md)
 
 * **`Web application`**.
-    - [eCallerEpidemiaWeb](https://github.com/eCaller/eCallerEpidemiaWeb/)
-    - [eCallerEpidemiaBackEnd](https://github.com/eCaller/eCallerEpidemiaBackEnd/)
+    - [eCallerEpidemiaWeb](https://github.com/eCaller/eCallerEpidemiaWeb/blob/master/README-EN.md)
+    - [eCallerEpidemiaBackEnd](https://github.com/eCaller/eCallerEpidemiaBackEnd/blob/master/README-EN.md)
 
 ## Functional description
 
-The functional documentation of the software solution is available at the following link [Wiki-Functional description](https://github.com/eCaller/eCallerEpidemiaWeb/wiki/functional-description).
+The functional documentation of the software solution is available at the following link [Wiki-FunctionalDescription](https://github.com/eCaller/eCallerEpidemiaBackEnd/wiki/functional-description).
 
 ## Technical description
 
-The technical documentation of the software solution is available at the following link [Wiki-Technical description](https://github.com/eCaller/eCallerEpidemiaWeb/wiki/technical-description).
+The technical documentation of the software solution is available at the following link [Wiki-TechnicalDescription](https://github.com/eCaller/eCallerEpidemiaBackEnd/wiki/technical-description).
 
 ## Licensing
 
