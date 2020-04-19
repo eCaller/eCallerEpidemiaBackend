@@ -2,7 +2,7 @@
 
 [![logo](/docs/img/logo.png)](https://www.ingenia.es)
 
-> [**Spanish** version](https://github.com/eCaller/eCallerEpidemiaBackEnd/blob/master/README.md)
+> [**Spanish** version](https://github.com/eCaller/eCallerEpidemiaBackEnd/)
 
 ## Introduction
 
@@ -37,7 +37,7 @@ eCaller Epidemias consists of two software components:
     4. Qualitative and quantitative measurement of the degree of the spread of the virus.
     5. Identification of risk zones.
 
-## Instalación
+## Installation
 1. Clonar el repositorio en una carpeta local
 
     * `git clone  https://github.com/eCaller/eCallerEpidemiaBackend.git`
