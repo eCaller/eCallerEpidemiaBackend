@@ -64,9 +64,11 @@ As a requirement before executing the application, the database server must exis
 As previous steps, the steps in the [Installation](README-EN.md#Installation) section must be performed and then the following steps must be performed:
 
 1. Docker image creation:
+
     `docker build -t ecaller-epidemias/ecaller-epidemias-backend .`
 
 2. Docker image execution:
+
     `docker run -d -p 8443:8443 --rm --name ecaller-epidemas-backend-1 ecaller-epidemias/ecaller-epidemias-backend`
 
 ## Repositories
