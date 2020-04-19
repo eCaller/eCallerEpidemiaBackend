@@ -92,6 +92,6 @@ The functional documentation of the software solution is available at the follow
 
 The technical documentation of the software solution is available at the following link [Wiki-Technical description](https://github.com/eCaller/eCallerEpidemiaWeb/wiki/technical-description).
 
-## Licencia
+## Licensing
 
 GNU GPL v3.0 (https://www.gnu.org/licenses/gpl-3.0.html).
