@@ -56,6 +56,7 @@ eCaller Epidemias consists of two software components:
 As a requirement before executing the application, the database server must exist, currently Postgresql with version> = 9.6, creating the database from the scripts.
 
 1. Running in development mode:
+
     * `npm run dev`
    
 ## Create and run a Docker container
