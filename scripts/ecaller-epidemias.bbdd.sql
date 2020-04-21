@@ -384,7 +384,7 @@ SELECT pg_catalog.setval('respuestas_id_seq', 51, true);
 
 
 insert into usuarios (id, username, password, nombre, activo, imagen, rol) values 
-(1, 'demo', '$2b$10$53y.tmRZne2VzjsVwQoyqurGpDqg4lezcYNlW0xLtmcQy2SdQBZTO', 'Usuario de demo', 1, null, 'N');
+(1, 'demo', '$2b$10$53y.tmRZne2VzjsVwQoyqurGpDqg4lezcYNlW0xLtmcQy2SdQBZTO', 'Usuario de demo', true, null, 'N');
 
 SELECT pg_catalog.setval('usuarios_id_seq', 1, true);
 
